@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#070915" />
+  <title>NEON DASH // Community Arcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23070915'/%3E%3Cpath d='M26 66 50 18l24 48-24-13z' fill='none' stroke='%2300f0ff' stroke-width='9'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <button class="brand" data-nav="home"><span class="brand-mark">◆</span><span>NEON DASH</span></button>
+      <nav class="nav-actions">
+        <button class="nav-btn" data-nav="levels">Levels</button>
+        <button class="nav-btn" data-nav="leaderboard">Leaderboard</button>
+        <button class="nav-btn accent" data-nav="editor">Create</button>
+        <button class="nav-btn" data-nav="account" id="accountButton">Account</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="homeView" class="view active">
+        <div class="hero panel-glow">
+          <div>
+            <div class="eyebrow">DASH / PLATFORMER / COMMUNITY</div>
+            <h1>BUILD. DASH. <span>BREAK THE GRID.</span></h1>
+            <p>Original arcade gameplay inspired by the fast, neon energy of Neon Dash, with community publishing, verified clears, high scores, moderators and an in-browser level editor.</p>
+            <div class="hero-buttons">
+              <button class="big-btn accent" data-nav="levels">▶ PLAY</button>
+              <button class="big-btn" data-nav="editor">🛠 CREATE</button>
+              <button class="big-btn" data-nav="leaderboard">🏆 SCORES</button>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="cube-demo"></div><div class="spark spark-1"></div><div class="spark spark-2"></div><div class="spark spark-3"></div>
+          </div>
+        </div>
+        <div class="home-grid">
+          <div class="panel">
+            <div class="panel-head"><h2>Main Levels</h2><span class="tag">CURATED</span></div>
+            <div id="homeMainLevels" class="level-strip"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Community Pulse</h2><button class="tiny-btn" data-nav="levels">Browse →</button></div>
+            <div id="homeCommunity" class="community-pulse"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="levelsView" class="view">
+        <div class="section-title"><div><div class="eyebrow">SELECT A LEVEL</div><h2>THE ARCADE</h2></div><button class="tiny-btn" data-nav="editor">＋ New Level</button></div>
+        <div class="filter-row panel">
+          <input id="levelSearch" class="field" placeholder="Search levels or creators…" autocomplete="off" />
+          <select id="levelMode" class="field"><option value="all">All modes</option><option value="dash">Dash</option><option value="platformer">Platformer</option></select>
+          <select id="levelSort" class="field"><option value="featured">Featured</option><option value="new">Newest</option><option value="plays">Most played</option></select>
+        </div>
+        <div id="levelGrid" class="level-grid"></div>
+      </section>
+
+      <section id="leaderboardView" class="view">
+        <div class="section-title"><div><div class="eyebrow">GLOBAL SCORES</div><h2>LEADERBOARD</h2></div></div>
+        <div class="panel lb-controls"><select id="lbLevel" class="field"></select><button id="lbLoad" class="big-btn accent">Refresh</button></div>
+        <div class="panel"><div class="table-wrap"><table><thead><tr><th>#</th><th>PLAYER</th><th>PROGRESS</th><th>RUN</th><th>ATTEMPTS</th></tr></thead><tbody id="lbRows"></tbody></table></div></div>
+      </section>
+
+      <section id="accountView" class="view">
+        <div class="section-title"><div><div class="eyebrow">PLAYER ID</div><h2>ACCOUNT</h2></div></div>
+        <div id="accountPanel" class="account-layout"></div>
+      </section>
+
+      <section id="editorView" class="view editor-view">
+        <div class="editor-head panel">
+          <div><div class="eyebrow">LEVEL EDITOR</div><h2 id="editorTitle">Untitled Level</h2></div>
+          <div class="editor-actions"><button class="tiny-btn" id="editorTest">▶ Test</button><button class="tiny-btn" id="editorSave">💾 Local</button><button class="tiny-btn accent" id="editorPublish">🌍 Publish</button><button class="tiny-btn" id="editorClear">Clear</button><button class="tiny-btn" data-nav="home">Exit</button></div>
+        </div>
+        <div class="editor-workspace">
+          <aside class="toolbar panel">
+            <label>Title<input id="editorName" class="field" maxlength="40" value="Untitled Level" /></label>
+            <label>Mode<select id="editorMode" class="field"><option value="dash">Dash</option><option value="platformer">Platformer</option></select></label>
+            <label>Speed<input id="editorSpeed" class="field" type="number" min="4" max="12" step="0.5" value="7" /></label>
+            <div class="tool-label">Objects</div>
+            <div id="objectPalette" class="palette"></div>
+            <div class="tool-help">Click or drag to paint. Grid: 32px. Right-click erases. Wheel / Shift+wheel pans. Mobile: use the buttons.</div>
+          </aside>
+          <div class="editor-stage panel"><canvas id="editorCanvas"></canvas><div class="editor-mobile"><button data-pan="-1">◀</button><button data-pan="1">▶</button></div></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="gameView" class="game-overlay hidden">
+      <canvas id="gameCanvas"></canvas>
+      <div class="game-hud"><div><span id="gameLevelName">Level</span><span class="hud-small" id="gameMode">DASH</span></div><div class="progress"><div id="progressBar"></div></div><div id="attemptText">Attempt 1</div></div>
+      <div id="gameMenu" class="game-menu hidden"><div class="menu-card panel"><div class="eyebrow">PAUSED</div><h2 id="pauseTitle">NEON DASH</h2><button id="resumeBtn" class="big-btn accent">Resume</button><button id="restartBtn" class="big-btn">Restart</button><button id="leaveGameBtn" class="big-btn">Menu</button></div></div>
+      <div id="mobileControls" class="mobile-controls"><button id="leftControl">◀</button><button id="jumpControl">JUMP</button><button id="rightControl">▶</button></div>
+      <div id="completeCard" class="game-menu hidden"><div class="menu-card panel"><div class="eyebrow">LEVEL COMPLETE</div><h2 id="completeTitle">GG!</h2><div id="completeStats"></div><button id="nextLevelBtn" class="big-btn accent">Next Level →</button><button id="replayBtn" class="big-btn">Replay</button><button id="completeMenuBtn" class="big-btn">Menu</button></div></div>
+    </div>
+
+    <div id="modal" class="modal hidden"><div class="modal-backdrop"></div><div id="modalContent" class="modal-card panel"></div></div>
+    <div id="toast" class="toast"></div>
+  </div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
